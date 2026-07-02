@@ -185,6 +185,7 @@ export type Database = {
           created_at: string
           created_by: string
           id: number
+          metadata: Json | null
           name: string
           path: string
           status_id: number
@@ -196,6 +197,7 @@ export type Database = {
           created_at?: string
           created_by: string
           id?: never
+          metadata?: Json | null
           name: string
           path: string
           status_id: number
@@ -207,6 +209,7 @@ export type Database = {
           created_at?: string
           created_by?: string
           id?: never
+          metadata?: Json | null
           name?: string
           path?: string
           status_id?: number
