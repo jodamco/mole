@@ -373,9 +373,6 @@ allow_dynamic_registration = false
 
 [edge_runtime]
 enabled = true
-# Supported request policies: `oneshot`, `per_worker`.
-# `per_worker` (default) — enables hot reload during local development.
-# `oneshot` — fallback mode if hot reload causes issues (e.g. in large repos or with symlinks).
 policy = "per_worker"
 # Port to attach the Chrome inspector for debugging edge functions.
 inspector_port = 8083
@@ -412,3 +409,25 @@ enabled = true
 # declarative_schema_path = "./database"
 # JSON string passed through to pg-delta SQL formatting.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":80,\"commaStyle\":\"trailing\"}"
+
+[functions.collection]
+enabled = true
+verify_jwt = true
+import_map = "./functions/collection/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/collection/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/collection/*.html" ]
+
+[functions.document]
+enabled = true
+verify_jwt = false
+import_map = "./functions/document/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/document/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/document/*.html" ]
