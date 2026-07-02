@@ -48,3 +48,40 @@ Handlers should be as thin as possible — only route requests to different meth
 3. Any DB read (`select`) must use the **user-authenticated Supabase instance** from the request context to enforce RLS.
    - If a request requires bypassing RLS, an explicit override must be provided using a **new high-privilege Supabase instance**.
    - Whenever a high-privilege Supabase instance is created, a comment must explain why it's needed and mark it as unsafe.
+
+4. **Edge functions communicate via the Broadcast Service.** If one edge function needs to notify another, it must publish a message through the Broadcast Service (`_shared/services/broadcast/service.ts`). Direct HTTP calls between edge functions are not allowed.
+
+## Backend — Broadcast Service
+
+1. The broadcast service lives at `_shared/services/broadcast/` and follows an **interface-based design** with `PubSubService` as the contract — implementations can be swapped without changing callers.
+
+2. **`BroadcastService`** is the public API. Create an instance and call `broadcastMessage()`:
+   ```ts
+   import { Topic, BroadcastService } from "../_shared/services/broadcast/service.ts";
+
+   const broadcast = new BroadcastService();
+
+   await broadcast.broadcastMessage({
+     topic: Topic.DOCUMENT_UPLOADED,
+     type: "SOME_TYPE",
+     data: { message: "123" },
+   });
+   ```
+
+3. **`PubSubService` interface** defines the contract. Any provider must implement `publish(message: PublishMessage): Promise<void>`. The default implementation is `UpstashService`.
+
+4. **To swap providers:**
+   ```ts
+   const broadcast = new BroadcastService(new GooglePubsubService());
+   ```
+
+5. **Topics** are defined as an enum in `types.ts` and re-exported from `service.ts`. Topics are written in SCREAMING_SNAKE
+
+6. The **`PublishMessage`** shape is:
+   ```ts
+   interface PublishMessage {
+     topic: Topic;        // which destination to send to
+     type: string;        // message type identifier
+     data: Record<string, unknown>;  // arbitrary payload
+   }
+   ```
