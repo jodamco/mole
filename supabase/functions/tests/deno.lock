@@ -1,12 +1,23 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@std/assert@1": "1.0.19",
+    "jsr:@std/internal@^1.0.12": "1.0.13",
     "jsr:@supabase/server@1": "1.0.0",
     "npm:@supabase/supabase-js@^2.98.0": "2.103.3",
     "npm:hono@^4.12.5": "4.12.27",
     "npm:jose@^6.2.0": "6.2.2"
   },
   "jsr": {
+    "@std/assert@1.0.19": {
+      "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/internal@1.0.13": {
+      "integrity": "2f9546691d4ac2d32859c82dff284aaeac980ddeca38430d07941e7e288725c0"
+    },
     "@supabase/server@1.0.0": {
       "integrity": "147e072c88d8e2f052f7c1767841834cc0c4e57a8bc2ecf89184fb73fc7d75bd",
       "dependencies": [
@@ -97,6 +108,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@std/assert@1",
       "jsr:@supabase/server@1"
     ]
   }

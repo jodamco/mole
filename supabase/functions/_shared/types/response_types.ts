@@ -22,6 +22,10 @@ export const success = (body: unknown): ApiResponse => {
     return buildResponse(body, 200);
 };
 
+export const accepted = (body?: unknown): ApiResponse => {
+    return buildResponse(body ?? { message: "Accepted" }, 202);
+};
+
 export const badRequest = (errorMessage?: string): ApiResponse => {
     const body = { message: errorMessage ?? "Bad request" };
     return buildResponse(body, 400);

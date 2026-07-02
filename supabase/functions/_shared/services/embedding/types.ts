@@ -1,5 +1,6 @@
 export interface Embedding {
   values: number[];
+  model: string;
 }
 
 export interface EmbeddingRequest {
