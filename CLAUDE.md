@@ -51,6 +51,39 @@ Handlers should be as thin as possible — only route requests to different meth
 
 4. **Edge functions communicate via the Broadcast Service.** If one edge function needs to notify another, it must publish a message through the Broadcast Service (`_shared/services/broadcast/service.ts`). Direct HTTP calls between edge functions are not allowed.
 
+## Backend — Request Utils
+
+1. `request_utils.ts` at `_shared/utils/request_utils.ts` provides:
+   - `requestWithRetry(url, init?, options?)` — fetch wrapper with exponential backoff + jitter.
+   - Only retries on **server errors (5xx)** and **network errors/timeouts (TypeError)**.
+   - Client errors (4xx) and redirects (3xx) are **never** retried — they pass through immediately.
+   - Default: 3 retries, 1s base delay, 30s max delay, with jitter.
+
+2. **`ServerError`** class lives in `_shared/types/error_types.ts`. Throw it with a status code to signal a retryable server error.
+
+## Backend — Background Workers
+
+1. Edge functions that process long-running work (e.g., embedding) should use **Supabase background workers** to return immediately while the job continues.
+
+2. Pattern for background workers:
+   ```ts
+   const bg = doWork(documentId);
+
+   const edgeRuntime = (globalThis as Record<string, unknown>)
+     .EdgeRuntime as { waitUntil: (p: Promise<unknown>) => void } | undefined;
+
+   if (edgeRuntime?.waitUntil) {
+     edgeRuntime.waitUntil(bg);
+     return accepted({ message: "Started." });
+   }
+
+   // Fallback for local dev
+   await bg;
+   return accepted({ message: "Completed." });
+   ```
+
+3. Use `accepted()` (202) from `response_types.ts` for the immediate response.
+
 ## Backend — Broadcast Service
 
 1. The broadcast service lives at `_shared/services/broadcast/` and follows an **interface-based design** with `PubSubService` as the contract — implementations can be swapped without changing callers.

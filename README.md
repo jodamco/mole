@@ -59,19 +59,38 @@ supabase/
 ├── migrations/
 │   └── *_initial_tables.sql     # Schema: users, collections, documents, chunks
 └── functions/
-    ├── _shared/                 # Shared utilities
-    │   ├── fetch_wrapper.ts     #    Auth wrapper & error handling
-    │   ├── response_types.ts    #    Standardized API responses
-    │   ├── route_utils.ts       #    URL parameter parsing
-    │   ├── validator_utils.ts   #    Validation helpers
-    │   └── types/
-    │       └── database.types.ts
+    ├── _shared/
+    │   ├── services/
+    │   │   ├── broadcast/       # Pub/sub message broker (Upstash)
+    │   │   └── embedding/       # Embedding service (swappable AI providers)
+    │   ├── types/
+    │   │   ├── database.types.ts
+    │   │   ├── document_status.ts
+    │   │   ├── error_types.ts   # ServerError, isRetryableError
+    │   │   └── response_types.ts
+    │   └── utils/
+    │       ├── fetch_wrapper_utils.ts
+    │       ├── request_utils.ts  # Retry & backoff for HTTP requests
+    │       ├── route_utils.ts
+    │       ├── supabase_utils.ts
+    │       └── validator_utils.ts
     ├── collection/              # Collections CRUD
     │   ├── index.ts
     │   ├── daf.ts
     │   ├── types.ts
     │   └── deno.json
-    └── document/                # Documents CRUD
+    ├── document/                # Documents CRUD
+    │   ├── index.ts
+    │   ├── daf.ts
+    │   ├── types.ts
+    │   └── deno.json
+    ├── chunk/                   # Text chunking (triggered by broadcast)
+    │   ├── index.ts
+    │   ├── daf.ts
+    │   ├── strategies.ts
+    │   ├── text_extractor.ts
+    │   └── deno.json
+    └── embed-chunks/            # Vector embedding (background worker)
         ├── index.ts
         ├── daf.ts
         ├── types.ts
@@ -86,7 +105,7 @@ supabase/
 | **collections** | Groups of documents, soft-deletable |
 | **documents** | Uploaded files with status & chunking strategy |
 | **chunks** | Text fragments with pgvector embeddings (1536d), linked-list traversal |
-| **document_status** | Processing status lookup |
+| **document_status** | Processing status lookup (state machine: uploading → uploaded → chunking → chunked → embedding → ready) |
 | **chunking_strategy** | Chunking method lookup |
 
 ## API
@@ -109,6 +128,23 @@ supabase/
 | `GET` | `/document/:id` | Get one document |
 | `POST` | `/document` | Upload a document (multipart) |
 | `DELETE` | `/document/:id` | Remove document + storage file |
+
+### Internal (message-broker-triggered)
+
+| Function | Trigger | What |
+|----------|---------|------|
+| `chunk` | Broadcast (Upstash) | Extracts text from uploaded file, splits into chunks, saves to DB |
+| `embed-chunks` | Broadcast (Upstash) | Creates embeddings for unprocessed chunks using background workers |
+
+## Processing pipeline
+
+```
+Upload → chunk (broadcast) → embed-chunks (background worker) → ready
+                              ↑
+                        EmbeddingService
+                        (swappable providers,
+                         default: OpenAI)
+```
 
 ## Getting started
 
