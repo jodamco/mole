@@ -5,9 +5,9 @@ import {
   internalError,
   notFound,
   success,
-} from "../_shared/response_types.ts";
+} from "../_shared/types/response_types.ts";
 import { Database } from "../_shared/types/database.types.ts";
-import { isEmpty } from "../_shared/validator_utils.ts";
+import { isEmpty } from "../_shared/utils/validator_utils.ts";
 import { CollectionDto } from "./types.ts";
 
 async function getAllCollections(

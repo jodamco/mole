@@ -1,13 +1,13 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { SupabaseContext } from "@supabase/server";
-import { customFetchWrapper, getUserId } from "../_shared/fetch_wrapper.ts";
+import { customFetchWrapper, getUserId } from "../_shared/utils/fetch_wrapper_utils.ts";
 import {
   ApiResponse,
   internalError,
   methodNotAllowed,
-} from "../_shared/response_types.ts";
+} from "../_shared/types/response_types.ts";
 import { Database } from "../_shared/types/database.types.ts";
-import { getIdFromPath } from "../_shared/route_utils.ts";
+import { getIdFromPath } from "../_shared/utils/route_utils.ts";
 import {
   createCollection,
   deleteCollection,

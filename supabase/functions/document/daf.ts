@@ -5,9 +5,9 @@ import {
   internalError,
   notFound,
   success,
-} from "../_shared/response_types.ts";
+} from "../_shared/types/response_types.ts";
 import { Database } from "../_shared/types/database.types.ts";
-import { isEmpty } from "../_shared/validator_utils.ts";
+import { isEmpty } from "../_shared/utils/validator_utils.ts";
 
 const DOCUMENT_BUCKET = "documents";
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
