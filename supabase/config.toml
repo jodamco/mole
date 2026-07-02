@@ -438,3 +438,10 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/chunk/deno.json"
 entrypoint = "./functions/chunk/index.ts"
+
+[functions.embed-chunks]
+enabled = true
+verify_jwt = false
+import_map = "./functions/embed-chunks/deno.json"
+entrypoint = "./functions/embed-chunks/index.ts"
+timeout_seconds = 90
