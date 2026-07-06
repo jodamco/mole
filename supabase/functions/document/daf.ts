@@ -148,6 +148,7 @@ async function createDocument(
 async function completeUpload(
   ctx: SupabaseContext<Database>,
   id: number | null,
+  broadcastService?: BroadcastService,
 ): Promise<ApiResponse> {
   if (isEmpty(id)) return badRequest("Invalid document id.");
 
@@ -173,7 +174,7 @@ async function completeUpload(
 
   if (error) return internalError(error.message);
 
-  const broadcast = new BroadcastService();
+  const broadcast = broadcastService ?? new BroadcastService();
   await broadcast.broadcastMessage({
     topic: Topic.DOCUMENT_UPLOADED,
     type: "START_CHUNKING",

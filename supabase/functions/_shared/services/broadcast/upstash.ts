@@ -1,6 +1,10 @@
-import { Client, Receiver } from "npm:@upstash/qstash@^2";
+import { Client, Receiver } from "@upstash/qstash@^2";
 import { Topic } from "./types.ts";
-import type { PublishMessage, PubSubService, ReceivedMessage } from "./types.ts";
+import type {
+  PublishMessage,
+  PubSubService,
+  ReceivedMessage,
+} from "./types.ts";
 
 const projectId = Deno.env.get("SUPABASE_PROJECT_ID") ?? "<project_id>";
 
@@ -59,7 +63,10 @@ export class UpstashService implements PubSubService {
     }
   }
 
-  async verifyAndParse(body: string, signature: string): Promise<ReceivedMessage> {
+  async verifyAndParse(
+    body: string,
+    signature: string,
+  ): Promise<ReceivedMessage> {
     const isValid = await this.receiver.verify({
       body,
       signature,

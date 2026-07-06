@@ -14,6 +14,19 @@ import {
   completeUpload,
   deleteDocument,
 } from "../../document/daf.ts";
+import { BroadcastService } from "../../_shared/services/broadcast/service.ts";
+import type { PubSubService, PublishMessage, ReceivedMessage } from "../../_shared/services/broadcast/types.ts";
+
+function createMockBroadcastService(): BroadcastService {
+  const mockPubSub: PubSubService = {
+    signatureHeader: "X-Mock",
+    async publish(_message: PublishMessage) {},
+    async verifyAndParse(_body: string, _signature: string): Promise<ReceivedMessage> {
+      return { type: "", data: {} };
+    },
+  };
+  return new BroadcastService(mockPubSub);
+}
 
 function ctx(supabase: ReturnType<typeof createMockSupabase>): SupabaseContext<Database> {
   return { supabase } as unknown as SupabaseContext<Database>;
@@ -243,7 +256,7 @@ Deno.test("completeUpload succeeds when status is uploading", async () => {
   const supabase = createMockSupabase({
     documents: mockResult({ id: 1, name: "report.pdf", status_id: 1 }),
   });
-  const res = await completeUpload(ctx(supabase), 1);
+  const res = await completeUpload(ctx(supabase), 1, createMockBroadcastService());
 
   assertEquals(res.status, 200);
   const body = await res.json();

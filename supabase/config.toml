@@ -444,4 +444,3 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/embed-chunks/deno.json"
 entrypoint = "./functions/embed-chunks/index.ts"
-timeout_seconds = 90

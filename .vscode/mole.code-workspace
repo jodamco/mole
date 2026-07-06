@@ -1,8 +1,8 @@
 {
   "folders": [
     {
-      "name": "edge-functions",
-      "path": "../supabase/functions",
+      "name": "supabase",
+      "path": "../supabase",
     },
     {
       "name": "migrations",
