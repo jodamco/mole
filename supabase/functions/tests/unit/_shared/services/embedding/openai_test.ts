@@ -1,6 +1,6 @@
 import { assertEquals, assertRejects } from "@std/assert";
-import { DeepSeekEmbeddingProvider } from "../../../../_shared/services/embedding/deepseek.ts";
-import { ServerError } from "../../../../_shared/types/error_types.ts";
+import { OpenAIEmbeddingProvider } from "../../../../../_shared/services/embedding/openai.ts";
+import { ServerError } from "../../../../../_shared/types/error_types.ts";
 
 const originalFetch = globalThis.fetch;
 
@@ -19,75 +19,72 @@ function jsonResponse(data: unknown, status = 200): Response {
   });
 }
 
-Deno.test("DeepSeekEmbeddingProvider throws if no API key", () => {
-  const originalKey = Deno.env.get("DEEPSEEK_API_KEY");
-  Deno.env.delete("DEEPSEEK_API_KEY");
+Deno.test("OpenAIEmbeddingProvider throws if no API key", () => {
+  const originalKey = Deno.env.get("OPENAI_API_KEY");
+  Deno.env.delete("OPENAI_API_KEY");
 
   try {
-    new DeepSeekEmbeddingProvider();
+    new OpenAIEmbeddingProvider();
     throw new Error("Should have thrown");
   } catch (e) {
-    assertEquals((e as Error).message, "DEEPSEEK_API_KEY is required");
+    assertEquals((e as Error).message, "OPENAI_API_KEY is required");
   } finally {
-    if (originalKey) Deno.env.set("DEEPSEEK_API_KEY", originalKey);
+    if (originalKey) Deno.env.set("OPENAI_API_KEY", originalKey);
   }
 });
 
-Deno.test("DeepSeekEmbeddingProvider uses provided API key", () => {
-  const provider = new DeepSeekEmbeddingProvider("test-key-123");
-  assertEquals(provider instanceof DeepSeekEmbeddingProvider, true);
+Deno.test("OpenAIEmbeddingProvider uses provided API key", () => {
+  const provider = new OpenAIEmbeddingProvider("test-key-123");
+  assertEquals(provider instanceof OpenAIEmbeddingProvider, true);
 });
 
-Deno.test("DeepSeekEmbeddingProvider uses default model", async () => {
+Deno.test("OpenAIEmbeddingProvider uses default model", async () => {
   let capturedBody = "";
   mockFetch(async (_url, init) => {
     capturedBody = init?.body as string;
     return jsonResponse({
       data: [{ embedding: [0.1, 0.2, 0.3] }],
-      usage: { prompt_tokens: 5, total_tokens: 5 },
     });
   });
 
   try {
-    const provider = new DeepSeekEmbeddingProvider("test-key");
+    const provider = new OpenAIEmbeddingProvider("test-key");
     const result = await provider.createEmbedding({ input: "hello" });
 
     assertEquals(result.length, 1);
     assertEquals(result[0].values, [0.1, 0.2, 0.3]);
-    assertEquals(result[0].model, "deepseek-embedding");
-    assertEquals(result[0].usage, { prompt_tokens: 5, total_tokens: 5 });
+    assertEquals(result[0].model, "text-embedding-3-small");
 
     const body = JSON.parse(capturedBody);
-    assertEquals(body.model, "deepseek-embedding");
+    assertEquals(body.model, "text-embedding-3-small");
   } finally {
     restoreFetch();
   }
 });
 
-Deno.test("DeepSeekEmbeddingProvider uses custom model", async () => {
+Deno.test("OpenAIEmbeddingProvider uses custom model", async () => {
   let capturedBody = "";
   mockFetch(async (_url, init) => {
     capturedBody = init?.body as string;
     return jsonResponse({
       data: [{ embedding: [0.5, 0.6] }],
-      usage: { prompt_tokens: 3, total_tokens: 3 },
     });
   });
 
   try {
-    const provider = new DeepSeekEmbeddingProvider("test-key", "deepseek-v3");
+    const provider = new OpenAIEmbeddingProvider("test-key", "text-embedding-ada-002");
     const result = await provider.createEmbedding({ input: "test" });
 
-    assertEquals(result[0].model, "deepseek-v3");
+    assertEquals(result[0].model, "text-embedding-ada-002");
 
     const body = JSON.parse(capturedBody);
-    assertEquals(body.model, "deepseek-v3");
+    assertEquals(body.model, "text-embedding-ada-002");
   } finally {
     restoreFetch();
   }
 });
 
-Deno.test("DeepSeekEmbeddingProvider sends correct request format", async () => {
+Deno.test("OpenAIEmbeddingProvider sends correct request format", async () => {
   let capturedUrl = "";
   let capturedInit: RequestInit | undefined;
 
@@ -96,15 +93,14 @@ Deno.test("DeepSeekEmbeddingProvider sends correct request format", async () => 
     capturedInit = init;
     return jsonResponse({
       data: [{ embedding: [1.0] }],
-      usage: { prompt_tokens: 1, total_tokens: 1 },
     });
   });
 
   try {
-    const provider = new DeepSeekEmbeddingProvider("my-api-key");
+    const provider = new OpenAIEmbeddingProvider("my-api-key");
     await provider.createEmbedding({ input: "hello world" });
 
-    assertEquals(capturedUrl, "https://api.deepseek.com/v1/embeddings");
+    assertEquals(capturedUrl, "https://api.openai.com/v1/embeddings");
     assertEquals(capturedInit?.method, "POST");
     const headers = capturedInit?.headers as Record<string, string>;
     assertEquals(headers?.["Content-Type"], "application/json");
@@ -112,49 +108,47 @@ Deno.test("DeepSeekEmbeddingProvider sends correct request format", async () => 
 
     const body = JSON.parse(capturedInit?.body as string);
     assertEquals(body.input, "hello world");
-    assertEquals(body.model, "deepseek-embedding");
+    assertEquals(body.model, "text-embedding-3-small");
   } finally {
     restoreFetch();
   }
 });
 
-Deno.test("DeepSeekEmbeddingProvider handles multiple embeddings", async () => {
+Deno.test("OpenAIEmbeddingProvider handles multiple embeddings", async () => {
   mockFetch(async () => {
     return jsonResponse({
       data: [
         { embedding: [0.1, 0.2] },
         { embedding: [0.3, 0.4] },
+        { embedding: [0.5, 0.6] },
       ],
-      usage: { prompt_tokens: 10, total_tokens: 10 },
     });
   });
 
   try {
-    const provider = new DeepSeekEmbeddingProvider("test-key");
-    const result = await provider.createEmbedding({ input: ["a", "b"] });
+    const provider = new OpenAIEmbeddingProvider("test-key");
+    const result = await provider.createEmbedding({ input: ["a", "b", "c"] });
 
-    assertEquals(result.length, 2);
+    assertEquals(result.length, 3);
     assertEquals(result[0].values, [0.1, 0.2]);
     assertEquals(result[1].values, [0.3, 0.4]);
-    assertEquals(result[0].usage, { prompt_tokens: 10, total_tokens: 10 });
-    assertEquals(result[1].usage, { prompt_tokens: 10, total_tokens: 10 });
+    assertEquals(result[2].values, [0.5, 0.6]);
   } finally {
     restoreFetch();
   }
 });
 
-Deno.test("DeepSeekEmbeddingProvider uses request model override", async () => {
+Deno.test("OpenAIEmbeddingProvider uses request model override", async () => {
   let capturedBody = "";
   mockFetch(async (_url, init) => {
     capturedBody = init?.body as string;
     return jsonResponse({
       data: [{ embedding: [0.1] }],
-      usage: { prompt_tokens: 2, total_tokens: 2 },
     });
   });
 
   try {
-    const provider = new DeepSeekEmbeddingProvider("test-key");
+    const provider = new OpenAIEmbeddingProvider("test-key");
     const result = await provider.createEmbedding({
       input: "test",
       model: "custom-model",
@@ -169,73 +163,54 @@ Deno.test("DeepSeekEmbeddingProvider uses request model override", async () => {
   }
 });
 
-Deno.test("DeepSeekEmbeddingProvider throws on 4xx error", async () => {
+Deno.test("OpenAIEmbeddingProvider throws on 4xx error", async () => {
   mockFetch(async () => {
     return jsonResponse(
-      { error: { message: "Invalid API key" } },
+      { error: { message: "Invalid API key provided" } },
       401,
     );
   });
 
   try {
-    const provider = new DeepSeekEmbeddingProvider("bad-key");
+    const provider = new OpenAIEmbeddingProvider("bad-key");
     await assertRejects(
       () => provider.createEmbedding({ input: "test" }),
       Error,
-      "Invalid API key",
+      "Invalid API key provided",
     );
   } finally {
     restoreFetch();
   }
 });
 
-Deno.test("DeepSeekEmbeddingProvider throws on 4xx without error message", async () => {
+Deno.test("OpenAIEmbeddingProvider throws on 4xx without error message", async () => {
   mockFetch(async () => {
     return jsonResponse({}, 400);
   });
 
   try {
-    const provider = new DeepSeekEmbeddingProvider("test-key");
+    const provider = new OpenAIEmbeddingProvider("test-key");
     await assertRejects(
       () => provider.createEmbedding({ input: "test" }),
       Error,
-      "DeepSeek API error: 400",
+      "OpenAI API error: 400",
     );
   } finally {
     restoreFetch();
   }
 });
 
-Deno.test("DeepSeekEmbeddingProvider throws ServerError on 5xx", async () => {
+Deno.test("OpenAIEmbeddingProvider throws ServerError on 5xx", async () => {
   mockFetch(async () => {
     return new Response("Internal Server Error", { status: 500 });
   });
 
   try {
-    const provider = new DeepSeekEmbeddingProvider("test-key");
+    const provider = new OpenAIEmbeddingProvider("test-key");
     await assertRejects(
       () => provider.createEmbedding({ input: "test" }),
       ServerError,
     );
-  } finally {
-    restoreFetch();
-  }
-});
-
-Deno.test("DeepSeekEmbeddingProvider handles missing usage in response", async () => {
-  mockFetch(async () => {
-    return jsonResponse({
-      data: [{ embedding: [0.1, 0.2] }],
-    });
-  });
-
-  try {
-    const provider = new DeepSeekEmbeddingProvider("test-key");
-    const result = await provider.createEmbedding({ input: "test" });
-
-    assertEquals(result.length, 1);
-    assertEquals(result[0].values, [0.1, 0.2]);
-    assertEquals(result[0].usage, undefined);
   } finally {
     restoreFetch();
   }

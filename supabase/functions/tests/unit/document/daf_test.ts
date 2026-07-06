@@ -1,34 +1,43 @@
 import { assertEquals } from "@std/assert";
 import { SupabaseContext } from "@supabase/server";
-import { Database } from "../../_shared/types/database.types.ts";
+import { Database } from "../../../_shared/types/database.types.ts";
 import {
   createMockSupabase,
-  mockResult,
-  mockError,
   createRequest,
-} from "../utils/test_utils.ts";
+  mockError,
+  mockResult,
+} from "../../utils/test_utils.ts";
 import {
-  getDocuments,
-  getDocument,
-  createDocument,
   completeUpload,
+  createDocument,
   deleteDocument,
-} from "../../document/daf.ts";
-import { BroadcastService } from "../../_shared/services/broadcast/service.ts";
-import type { PubSubService, PublishMessage, ReceivedMessage } from "../../_shared/services/broadcast/types.ts";
+  getDocument,
+  getDocuments,
+} from "../../../document/daf.ts";
+import { BroadcastService } from "../../../_shared/services/broadcast/service.ts";
+import type {
+  PublishMessage,
+  PubSubService,
+  ReceivedMessage,
+} from "../../../_shared/services/broadcast/types.ts";
 
 function createMockBroadcastService(): BroadcastService {
   const mockPubSub: PubSubService = {
     signatureHeader: "X-Mock",
     async publish(_message: PublishMessage) {},
-    async verifyAndParse(_body: string, _signature: string): Promise<ReceivedMessage> {
+    async verifyAndParse(
+      _body: string,
+      _signature: string,
+    ): Promise<ReceivedMessage> {
       return { type: "", data: {} };
     },
   };
   return new BroadcastService(mockPubSub);
 }
 
-function ctx(supabase: ReturnType<typeof createMockSupabase>): SupabaseContext<Database> {
+function ctx(
+  supabase: ReturnType<typeof createMockSupabase>,
+): SupabaseContext<Database> {
   return { supabase } as unknown as SupabaseContext<Database>;
 }
 
@@ -136,7 +145,10 @@ Deno.test("createDocument returns 400 when name is missing", async () => {
 
 Deno.test("createDocument returns 400 when collectionId is missing", async () => {
   const supabase = createMockSupabase();
-  const req = createRequest("POST", "/", { ...validDocBody, collectionId: undefined });
+  const req = createRequest("POST", "/", {
+    ...validDocBody,
+    collectionId: undefined,
+  });
   const res = await createDocument(req, ctx(supabase), "user-abc");
 
   assertEquals(res.status, 400);
@@ -145,7 +157,10 @@ Deno.test("createDocument returns 400 when collectionId is missing", async () =>
 
 Deno.test("createDocument returns 400 when chunkStrategyId is missing", async () => {
   const supabase = createMockSupabase();
-  const req = createRequest("POST", "/", { ...validDocBody, chunkStrategyId: undefined });
+  const req = createRequest("POST", "/", {
+    ...validDocBody,
+    chunkStrategyId: undefined,
+  });
   const res = await createDocument(req, ctx(supabase), "user-abc");
 
   assertEquals(res.status, 400);
@@ -163,7 +178,10 @@ Deno.test("createDocument returns 400 when size is missing", async () => {
 
 Deno.test("createDocument returns 400 when contentType is missing", async () => {
   const supabase = createMockSupabase();
-  const req = createRequest("POST", "/", { ...validDocBody, contentType: undefined });
+  const req = createRequest("POST", "/", {
+    ...validDocBody,
+    contentType: undefined,
+  });
   const res = await createDocument(req, ctx(supabase), "user-abc");
 
   assertEquals(res.status, 400);
@@ -196,7 +214,10 @@ Deno.test("createDocument returns 400 for NaN size", async () => {
 
 Deno.test("createDocument returns 400 when file exceeds max size", async () => {
   const supabase = createMockSupabase();
-  const req = createRequest("POST", "/", { ...validDocBody, size: 51 * 1024 * 1024 });
+  const req = createRequest("POST", "/", {
+    ...validDocBody,
+    size: 51 * 1024 * 1024,
+  });
   const res = await createDocument(req, ctx(supabase), "user-abc");
 
   assertEquals(res.status, 400);
@@ -204,7 +225,10 @@ Deno.test("createDocument returns 400 when file exceeds max size", async () => {
 
 Deno.test("createDocument returns 400 for unsupported content type", async () => {
   const supabase = createMockSupabase();
-  const req = createRequest("POST", "/", { ...validDocBody, contentType: "image/png" });
+  const req = createRequest("POST", "/", {
+    ...validDocBody,
+    contentType: "image/png",
+  });
   const res = await createDocument(req, ctx(supabase), "user-abc");
 
   assertEquals(res.status, 400);
@@ -256,7 +280,11 @@ Deno.test("completeUpload succeeds when status is uploading", async () => {
   const supabase = createMockSupabase({
     documents: mockResult({ id: 1, name: "report.pdf", status_id: 1 }),
   });
-  const res = await completeUpload(ctx(supabase), 1, createMockBroadcastService());
+  const res = await completeUpload(
+    ctx(supabase),
+    1,
+    createMockBroadcastService(),
+  );
 
   assertEquals(res.status, 200);
   const body = await res.json();

@@ -1,6 +1,6 @@
 import { assertEquals } from "@std/assert";
-import { EmbeddingService } from "../../../../_shared/services/embedding/service.ts";
-import type { Embedding, EmbeddingProvider, EmbeddingRequest } from "../../../../_shared/services/embedding/types.ts";
+import { EmbeddingService } from "../../../../../_shared/services/embedding/service.ts";
+import type { Embedding, EmbeddingProvider, EmbeddingRequest } from "../../../../../_shared/services/embedding/types.ts";
 
 function createMockProvider(): EmbeddingProvider & {
   calls: EmbeddingRequest[];

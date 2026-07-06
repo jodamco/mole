@@ -1,6 +1,6 @@
 import { assertEquals } from "@std/assert";
-import { BroadcastService, Topic } from "../../../../_shared/services/broadcast/service.ts";
-import type { PublishMessage, PubSubService, ReceivedMessage } from "../../../../_shared/services/broadcast/types.ts";
+import { BroadcastService, Topic } from "../../../../../_shared/services/broadcast/service.ts";
+import type { PublishMessage, PubSubService, ReceivedMessage } from "../../../../../_shared/services/broadcast/types.ts";
 
 function createMockPubSub(): PubSubService & {
   published: PublishMessage[];

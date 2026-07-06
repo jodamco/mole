@@ -8,7 +8,7 @@ import {
   methodNotAllowed,
   internalError,
   allowPreflight,
-} from "../../../_shared/types/response_types.ts";
+} from "../../../../_shared/types/response_types.ts";
 
 async function assertResponse(
   response: Response,

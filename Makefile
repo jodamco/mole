@@ -7,7 +7,10 @@ reset:
 	supabase functions serve
 
 unit-test:
-	cd supabase/functions/tests && deno test --allow-env --allow-net --allow-read
+	cd supabase/functions/tests/unit && deno test --allow-env --allow-net --allow-read
+
+integration-test:
+	cd supabase/functions/tests/integration && deno test --allow-env --allow-net --allow-read
 
 qstash:
 	docker run -p 8080:8080 public.ecr.aws/upstash/qstash:latest qstash dev

@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { getIdFromPath } from "../../../_shared/utils/route_utils.ts";
+import { getIdFromPath } from "../../../../_shared/utils/route_utils.ts";
 
 Deno.test("getIdFromPath returns id when last segment is a number", () => {
   const req = new Request("http://localhost/collections/42");

@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { isEmpty } from "../../../_shared/utils/validator_utils.ts";
+import { isEmpty } from "../../../../_shared/utils/validator_utils.ts";
 
 Deno.test("isEmpty returns true for null", () => {
   assertEquals(isEmpty(null), true);
