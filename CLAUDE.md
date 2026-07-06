@@ -31,6 +31,8 @@
 
 3. **Primary keys** must use `id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY` unless stated otherwise.
 
+4. - **RLS performance**: Always use `(select auth.uid())` not `auth.uid()` directly
+
 ## Backend — Edge Functions
 
 1. All edge functions must follow this structure:

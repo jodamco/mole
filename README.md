@@ -62,7 +62,8 @@ supabase/
     ├── _shared/
     │   ├── services/
     │   │   ├── broadcast/       # Pub/sub message broker (Upstash)
-    │   │   └── embedding/       # Embedding service (swappable AI providers)
+    │   │   ├── embedding/       # Embedding service (swappable AI providers)
+    │   │   └── usage/           # Token usage tracking (fire-and-forget)
     │   ├── types/
     │   │   ├── database.types.ts
     │   │   ├── document_status.ts
@@ -107,6 +108,7 @@ supabase/
 | **chunks** | Text fragments with pgvector embeddings (1536d), linked-list traversal |
 | **document_status** | Processing status lookup (state machine: uploading → uploaded → chunking → chunked → embedding → ready) |
 | **chunking_strategy** | Chunking method lookup |
+| **usage.ai_usage_log** | Immutable token usage log (per API call, RLS-protected) |
 
 ## API
 

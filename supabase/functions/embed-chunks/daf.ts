@@ -107,7 +107,7 @@ export async function processEmbeddings(
 ): Promise<void> {
   const supabase = createServiceClient();
   const statuses = await DocumentStatus.load(supabase);
-  const embeddingService = new EmbeddingService();
+  const embeddingService = EmbeddingService.deepseek();
 
   try {
     await claimDocument(supabase, documentId, statuses);
