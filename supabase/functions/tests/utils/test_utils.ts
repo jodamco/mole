@@ -51,6 +51,7 @@ interface MockSupabaseOptions {
   users?: MockResult | MockResult[];
   document_status?: MockResult | MockResult[];
   chunking_strategy?: MockResult | MockResult[];
+  chunks?: MockResult | MockResult[];
   storage?: MockResult | MockResult[];
   default?: MockResult | MockResult[];
 }
@@ -80,6 +81,7 @@ export function createMockSupabase(options: MockSupabaseOptions = {}) {
           _opts?: Record<string, unknown>,
         ) => Promise.resolve(pick("__storage")),
         remove: (_paths: string[]) => Promise.resolve(pick("__storage")),
+        download: (_path: string) => Promise.resolve(pick("__storage")),
       }),
     },
   };

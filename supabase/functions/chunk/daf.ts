@@ -11,14 +11,14 @@ import { BroadcastService, Topic } from "../_shared/services/broadcast/service.t
 
 const DOCUMENT_BUCKET = "documents";
 
-interface ClaimedDocument {
+export interface ClaimedDocument {
   id: number;
   path: string;
   name: string;
   strategyName: string;
 }
 
-async function claimDocument(
+export async function claimDocument(
   supabase: SupabaseClient<Database>,
   documentId: number,
   status: DocumentStatus,
@@ -47,7 +47,7 @@ async function claimDocument(
   };
 }
 
-async function downloadFile(
+export async function downloadFile(
   supabase: SupabaseClient<Database>,
   path: string,
 ): Promise<ArrayBuffer> {
@@ -62,7 +62,7 @@ async function downloadFile(
   return await data.arrayBuffer();
 }
 
-async function saveChunks(
+export async function saveChunks(
   supabase: SupabaseClient<Database>,
   documentId: number,
   chunks: string[],
@@ -81,7 +81,7 @@ async function saveChunks(
   return data;
 }
 
-async function linkChunks(
+export async function linkChunks(
   supabase: SupabaseClient<Database>,
   chunks: Array<{ id: number }>,
 ): Promise<void> {
@@ -105,7 +105,7 @@ async function linkChunks(
   }
 }
 
-async function updateDocumentStatus(
+export async function updateDocumentStatus(
   supabase: SupabaseClient<Database>,
   documentId: number,
   statusId: number,

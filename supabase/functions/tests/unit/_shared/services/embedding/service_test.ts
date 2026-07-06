@@ -14,7 +14,7 @@ function createMockProvider(): EmbeddingProvider & {
     results: [],
     async createEmbedding(request: EmbeddingRequest): Promise<Embedding[]> {
       mock.calls.push(request);
-      return mock.results.shift() ?? [];
+      return await Promise.resolve(mock.results.shift() ?? []);
     },
   };
   return mock;

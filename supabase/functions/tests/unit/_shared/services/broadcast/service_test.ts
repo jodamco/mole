@@ -14,11 +14,11 @@ function createMockPubSub(): PubSubService & {
     published: [],
     verifyResult: null,
     async publish(message: PublishMessage) {
-      mock.published.push(message);
+      await Promise.resolve(mock.published.push(message));
     },
     async verifyAndParse(_body: string, _signature: string): Promise<ReceivedMessage> {
       if (!mock.verifyResult) throw new Error("No verify result configured");
-      return mock.verifyResult;
+      return await Promise.resolve(mock.verifyResult);
     },
   };
   return mock;

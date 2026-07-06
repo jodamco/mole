@@ -42,9 +42,9 @@ Deno.test("OpenAIEmbeddingProvider uses default model", async () => {
   let capturedBody = "";
   mockFetch(async (_url, init) => {
     capturedBody = init?.body as string;
-    return jsonResponse({
+    return await Promise.resolve(jsonResponse({
       data: [{ embedding: [0.1, 0.2, 0.3] }],
-    });
+    }));
   });
 
   try {
@@ -66,9 +66,9 @@ Deno.test("OpenAIEmbeddingProvider uses custom model", async () => {
   let capturedBody = "";
   mockFetch(async (_url, init) => {
     capturedBody = init?.body as string;
-    return jsonResponse({
+    return await Promise.resolve(jsonResponse({
       data: [{ embedding: [0.5, 0.6] }],
-    });
+    }));
   });
 
   try {
@@ -91,9 +91,9 @@ Deno.test("OpenAIEmbeddingProvider sends correct request format", async () => {
   mockFetch(async (url, init) => {
     capturedUrl = url.toString();
     capturedInit = init;
-    return jsonResponse({
+    return await Promise.resolve(jsonResponse({
       data: [{ embedding: [1.0] }],
-    });
+    }));
   });
 
   try {
@@ -116,13 +116,13 @@ Deno.test("OpenAIEmbeddingProvider sends correct request format", async () => {
 
 Deno.test("OpenAIEmbeddingProvider handles multiple embeddings", async () => {
   mockFetch(async () => {
-    return jsonResponse({
+    return await Promise.resolve(jsonResponse({
       data: [
         { embedding: [0.1, 0.2] },
         { embedding: [0.3, 0.4] },
         { embedding: [0.5, 0.6] },
       ],
-    });
+    }));
   });
 
   try {
@@ -142,9 +142,9 @@ Deno.test("OpenAIEmbeddingProvider uses request model override", async () => {
   let capturedBody = "";
   mockFetch(async (_url, init) => {
     capturedBody = init?.body as string;
-    return jsonResponse({
+    return await Promise.resolve(jsonResponse({
       data: [{ embedding: [0.1] }],
-    });
+    }));
   });
 
   try {
@@ -165,10 +165,10 @@ Deno.test("OpenAIEmbeddingProvider uses request model override", async () => {
 
 Deno.test("OpenAIEmbeddingProvider throws on 4xx error", async () => {
   mockFetch(async () => {
-    return jsonResponse(
+    return await Promise.resolve(jsonResponse(
       { error: { message: "Invalid API key provided" } },
       401,
-    );
+    ));
   });
 
   try {
@@ -185,7 +185,7 @@ Deno.test("OpenAIEmbeddingProvider throws on 4xx error", async () => {
 
 Deno.test("OpenAIEmbeddingProvider throws on 4xx without error message", async () => {
   mockFetch(async () => {
-    return jsonResponse({}, 400);
+    return await Promise.resolve(jsonResponse({}, 400));
   });
 
   try {
@@ -202,7 +202,7 @@ Deno.test("OpenAIEmbeddingProvider throws on 4xx without error message", async (
 
 Deno.test("OpenAIEmbeddingProvider throws ServerError on 5xx", async () => {
   mockFetch(async () => {
-    return new Response("Internal Server Error", { status: 500 });
+    return await Promise.resolve(new Response("Internal Server Error", { status: 500 }));
   });
 
   try {

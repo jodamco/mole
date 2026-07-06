@@ -29,7 +29,7 @@ function createMockBroadcastService(): BroadcastService {
       _body: string,
       _signature: string,
     ): Promise<ReceivedMessage> {
-      return { type: "", data: {} };
+      return await Promise.resolve({ type: "", data: {} });
     },
   };
   return new BroadcastService(mockPubSub);

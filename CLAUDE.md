@@ -53,6 +53,13 @@ Handlers should be as thin as possible — only route requests to different meth
 
 4. **Edge functions communicate via the Broadcast Service.** If one edge function needs to notify another, it must publish a message through the Broadcast Service (`_shared/services/broadcast/service.ts`). Direct HTTP calls between edge functions are not allowed.
 
+5. **DAF functions exported only for unit testing** must be marked with:
+   ```ts
+   /**
+    * @internal - Only exported for unit tests. Do not use import.
+    */
+   ```
+
 ## Backend — Request Utils
 
 1. `request_utils.ts` at `_shared/utils/request_utils.ts` provides:

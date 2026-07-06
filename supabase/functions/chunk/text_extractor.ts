@@ -9,6 +9,7 @@ export async function extractText(
 
   switch (ext) {
     case "txt":
+    case "md":
       return new TextDecoder().decode(file);
 
     case "pdf":

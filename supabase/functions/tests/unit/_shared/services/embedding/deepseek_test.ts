@@ -42,10 +42,10 @@ Deno.test("DeepSeekEmbeddingProvider uses default model", async () => {
   let capturedBody = "";
   mockFetch(async (_url, init) => {
     capturedBody = init?.body as string;
-    return jsonResponse({
+    return await Promise.resolve(jsonResponse({
       data: [{ embedding: [0.1, 0.2, 0.3] }],
       usage: { prompt_tokens: 5, total_tokens: 5 },
-    });
+    }));
   });
 
   try {
@@ -68,10 +68,10 @@ Deno.test("DeepSeekEmbeddingProvider uses custom model", async () => {
   let capturedBody = "";
   mockFetch(async (_url, init) => {
     capturedBody = init?.body as string;
-    return jsonResponse({
+    return await Promise.resolve(jsonResponse({
       data: [{ embedding: [0.5, 0.6] }],
       usage: { prompt_tokens: 3, total_tokens: 3 },
-    });
+    }));
   });
 
   try {
@@ -94,10 +94,10 @@ Deno.test("DeepSeekEmbeddingProvider sends correct request format", async () => 
   mockFetch(async (url, init) => {
     capturedUrl = url.toString();
     capturedInit = init;
-    return jsonResponse({
+    return await Promise.resolve(jsonResponse({
       data: [{ embedding: [1.0] }],
       usage: { prompt_tokens: 1, total_tokens: 1 },
-    });
+    }));
   });
 
   try {
@@ -120,13 +120,13 @@ Deno.test("DeepSeekEmbeddingProvider sends correct request format", async () => 
 
 Deno.test("DeepSeekEmbeddingProvider handles multiple embeddings", async () => {
   mockFetch(async () => {
-    return jsonResponse({
+    return await Promise.resolve(jsonResponse({
       data: [
         { embedding: [0.1, 0.2] },
         { embedding: [0.3, 0.4] },
       ],
       usage: { prompt_tokens: 10, total_tokens: 10 },
-    });
+    }));
   });
 
   try {
@@ -147,10 +147,10 @@ Deno.test("DeepSeekEmbeddingProvider uses request model override", async () => {
   let capturedBody = "";
   mockFetch(async (_url, init) => {
     capturedBody = init?.body as string;
-    return jsonResponse({
+    return await Promise.resolve(jsonResponse({
       data: [{ embedding: [0.1] }],
       usage: { prompt_tokens: 2, total_tokens: 2 },
-    });
+    }));
   });
 
   try {
@@ -171,10 +171,10 @@ Deno.test("DeepSeekEmbeddingProvider uses request model override", async () => {
 
 Deno.test("DeepSeekEmbeddingProvider throws on 4xx error", async () => {
   mockFetch(async () => {
-    return jsonResponse(
+    return await Promise.resolve(jsonResponse(
       { error: { message: "Invalid API key" } },
       401,
-    );
+    ));
   });
 
   try {
@@ -191,7 +191,7 @@ Deno.test("DeepSeekEmbeddingProvider throws on 4xx error", async () => {
 
 Deno.test("DeepSeekEmbeddingProvider throws on 4xx without error message", async () => {
   mockFetch(async () => {
-    return jsonResponse({}, 400);
+    return await Promise.resolve(jsonResponse({}, 400));
   });
 
   try {
@@ -208,7 +208,7 @@ Deno.test("DeepSeekEmbeddingProvider throws on 4xx without error message", async
 
 Deno.test("DeepSeekEmbeddingProvider throws ServerError on 5xx", async () => {
   mockFetch(async () => {
-    return new Response("Internal Server Error", { status: 500 });
+    return await Promise.resolve(new Response("Internal Server Error", { status: 500 }));
   });
 
   try {
@@ -224,9 +224,9 @@ Deno.test("DeepSeekEmbeddingProvider throws ServerError on 5xx", async () => {
 
 Deno.test("DeepSeekEmbeddingProvider handles missing usage in response", async () => {
   mockFetch(async () => {
-    return jsonResponse({
+    return await Promise.resolve(jsonResponse({
       data: [{ embedding: [0.1, 0.2] }],
-    });
+    }));
   });
 
   try {
