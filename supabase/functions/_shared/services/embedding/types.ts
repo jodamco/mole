@@ -1,6 +1,7 @@
 export interface Embedding {
   values: number[];
   model: string;
+  usage?: { prompt_tokens: number; total_tokens: number };
 }
 
 export interface EmbeddingRequest {

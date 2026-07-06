@@ -7,6 +7,7 @@ import type { ApiResponse } from "../_shared/types/response_types.ts";
 import { internalError, success } from "../_shared/types/response_types.ts";
 import { extractText } from "./text_extractor.ts";
 import { chunkText } from "./strategies.ts";
+import { BroadcastService, Topic } from "../_shared/services/broadcast/service.ts";
 
 const DOCUMENT_BUCKET = "documents";
 
@@ -138,6 +139,13 @@ export async function processChunking(
     const insertedChunks = await saveChunks(supabase, documentId, chunks);
     await linkChunks(supabase, insertedChunks);
     await updateDocumentStatus(supabase, documentId, statuses.chunked);
+
+    const broadcast = new BroadcastService();
+    await broadcast.broadcastMessage({
+      topic: Topic.DOCUMENT_CHUNKED,
+      type: "START_EMBEDDING",
+      data: { documentId },
+    });
 
     return success({ message: "Document chunked successfully." });
   } catch (error: unknown) {

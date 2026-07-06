@@ -8,6 +8,7 @@ import {
 } from "../_shared/types/response_types.ts";
 import { Database } from "../_shared/types/database.types.ts";
 import { isEmpty } from "../_shared/utils/validator_utils.ts";
+import { BroadcastService, Topic } from "../_shared/services/broadcast/service.ts";
 
 const DOCUMENT_BUCKET = "documents";
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
@@ -171,6 +172,13 @@ async function completeUpload(
     .single();
 
   if (error) return internalError(error.message);
+
+  const broadcast = new BroadcastService();
+  await broadcast.broadcastMessage({
+    topic: Topic.DOCUMENT_UPLOADED,
+    type: "START_CHUNKING",
+    data: { documentId: id! },
+  });
 
   return success({ document: data });
 }
