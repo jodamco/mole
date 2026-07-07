@@ -11,6 +11,9 @@ import { BroadcastService, Topic } from "../_shared/services/broadcast/service.t
 
 const DOCUMENT_BUCKET = "documents";
 
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
 export interface ClaimedDocument {
   id: number;
   path: string;
@@ -18,6 +21,9 @@ export interface ClaimedDocument {
   strategyName: string;
 }
 
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
 export async function claimDocument(
   supabase: SupabaseClient<Database>,
   documentId: number,
@@ -47,6 +53,9 @@ export async function claimDocument(
   };
 }
 
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
 export async function downloadFile(
   supabase: SupabaseClient<Database>,
   path: string,
@@ -62,6 +71,9 @@ export async function downloadFile(
   return await data.arrayBuffer();
 }
 
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
 export async function saveChunks(
   supabase: SupabaseClient<Database>,
   documentId: number,
@@ -81,6 +93,9 @@ export async function saveChunks(
   return data;
 }
 
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
 export async function linkChunks(
   supabase: SupabaseClient<Database>,
   chunks: Array<{ id: number }>,
@@ -105,6 +120,9 @@ export async function linkChunks(
   }
 }
 
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
 export async function updateDocumentStatus(
   supabase: SupabaseClient<Database>,
   documentId: number,

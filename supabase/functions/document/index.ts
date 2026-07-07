@@ -57,6 +57,9 @@ const handler = async (
   }
 };
 
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
 export { handler };
 export default {
   fetch: customFetchWrapper(handler),
