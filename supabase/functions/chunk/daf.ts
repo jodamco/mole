@@ -7,17 +7,24 @@ import type { ApiResponse } from "../_shared/types/response_types.ts";
 import { internalError, success } from "../_shared/types/response_types.ts";
 import { extractText } from "./text_extractor.ts";
 import { chunkText } from "./strategies.ts";
+import { BroadcastService, Topic } from "../_shared/services/broadcast/service.ts";
 
 const DOCUMENT_BUCKET = "documents";
 
-interface ClaimedDocument {
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
+export interface ClaimedDocument {
   id: number;
   path: string;
   name: string;
   strategyName: string;
 }
 
-async function claimDocument(
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
+export async function claimDocument(
   supabase: SupabaseClient<Database>,
   documentId: number,
   status: DocumentStatus,
@@ -46,7 +53,10 @@ async function claimDocument(
   };
 }
 
-async function downloadFile(
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
+export async function downloadFile(
   supabase: SupabaseClient<Database>,
   path: string,
 ): Promise<ArrayBuffer> {
@@ -61,7 +71,10 @@ async function downloadFile(
   return await data.arrayBuffer();
 }
 
-async function saveChunks(
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
+export async function saveChunks(
   supabase: SupabaseClient<Database>,
   documentId: number,
   chunks: string[],
@@ -80,7 +93,10 @@ async function saveChunks(
   return data;
 }
 
-async function linkChunks(
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
+export async function linkChunks(
   supabase: SupabaseClient<Database>,
   chunks: Array<{ id: number }>,
 ): Promise<void> {
@@ -104,7 +120,10 @@ async function linkChunks(
   }
 }
 
-async function updateDocumentStatus(
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
+export async function updateDocumentStatus(
   supabase: SupabaseClient<Database>,
   documentId: number,
   statusId: number,
@@ -138,6 +157,13 @@ export async function processChunking(
     const insertedChunks = await saveChunks(supabase, documentId, chunks);
     await linkChunks(supabase, insertedChunks);
     await updateDocumentStatus(supabase, documentId, statuses.chunked);
+
+    const broadcast = new BroadcastService();
+    await broadcast.broadcastMessage({
+      topic: Topic.DOCUMENT_CHUNKED,
+      type: "START_EMBEDDING",
+      data: { documentId },
+    });
 
     return success({ message: "Document chunked successfully." });
   } catch (error: unknown) {

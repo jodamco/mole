@@ -31,6 +31,8 @@
 
 3. **Primary keys** must use `id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY` unless stated otherwise.
 
+4. - **RLS performance**: Always use `(select auth.uid())` not `auth.uid()` directly
+
 ## Backend — Edge Functions
 
 1. All edge functions must follow this structure:
@@ -50,6 +52,13 @@ Handlers should be as thin as possible — only route requests to different meth
    - Whenever a high-privilege Supabase instance is created, a comment must explain why it's needed and mark it as unsafe.
 
 4. **Edge functions communicate via the Broadcast Service.** If one edge function needs to notify another, it must publish a message through the Broadcast Service (`_shared/services/broadcast/service.ts`). Direct HTTP calls between edge functions are not allowed.
+
+5. **DAF functions exported only for unit testing** must be marked with:
+   ```ts
+   /**
+    * @internal - Only exported for unit tests. Do not use import.
+    */
+   ```
 
 ## Backend — Request Utils
 

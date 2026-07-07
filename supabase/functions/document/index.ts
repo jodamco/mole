@@ -11,6 +11,7 @@ import {
   internalError,
   methodNotAllowed,
 } from "../_shared/types/response_types.ts";
+import { BroadcastService } from "../_shared/services/broadcast/service.ts";
 import {
   completeUpload,
   createDocument,
@@ -22,6 +23,7 @@ import {
 const handler = async (
   req: Request,
   ctx: SupabaseContext<Database>,
+  broadcastService?: BroadcastService,
 ): Promise<ApiResponse> => {
   const { id: userId, error } = await getUserId(ctx);
 
@@ -40,7 +42,7 @@ const handler = async (
       const segments = new URL(req.url).pathname.split("/").filter(Boolean);
       if (segments.at(-1) === "complete_upload") {
         const id = Number(segments.at(-2));
-        return completeUpload(ctx, id);
+        return completeUpload(ctx, id, broadcastService);
       }
       return createDocument(req, ctx, userId);
     }
@@ -55,6 +57,10 @@ const handler = async (
   }
 };
 
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
+export { handler };
 export default {
   fetch: customFetchWrapper(handler),
 };

@@ -1,6 +1,9 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { SupabaseContext } from "@supabase/server";
-import { customFetchWrapper, getUserId } from "../_shared/utils/fetch_wrapper_utils.ts";
+import {
+  customFetchWrapper,
+  getUserId,
+} from "../_shared/utils/fetch_wrapper_utils.ts";
 import {
   ApiResponse,
   internalError,
@@ -48,4 +51,8 @@ const handler = async (
   }
 };
 
+/**
+ * @internal - Only exported for unit tests. Do not use import.
+ */
+export { handler };
 export default { fetch: customFetchWrapper(handler) };

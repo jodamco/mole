@@ -1,5 +1,5 @@
 const DEFAULT_CHUNK_SIZE = 1000;
-const DEFAULT_OVERLAP = 200;
+const DEFAULT_OVERLAP = 100;
 
 export function chunkText(text: string, strategyName: string): string[] {
   const name = strategyName.toLowerCase();

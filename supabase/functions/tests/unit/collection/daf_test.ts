@@ -1,19 +1,19 @@
 import { assertEquals } from "@std/assert";
 import { SupabaseContext } from "@supabase/server";
-import { Database } from "../../_shared/types/database.types.ts";
+import { Database } from "../../../_shared/types/database.types.ts";
 import {
   createMockSupabase,
   mockResult,
   mockError,
   createRequest,
-} from "../utils/test_utils.ts";
+} from "../../utils/test_utils.ts";
 import {
   getAllCollections,
   getCollection,
   createCollection,
   patchCollection,
   deleteCollection,
-} from "../../collection/daf.ts";
+} from "../../../collection/daf.ts";
 
 function ctx(supabase: ReturnType<typeof createMockSupabase>): SupabaseContext<Database> {
   return { supabase } as unknown as SupabaseContext<Database>;

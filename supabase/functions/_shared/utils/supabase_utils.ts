@@ -12,3 +12,11 @@ export function createServiceClient(): SupabaseClient<Database> {
   }
   return createClient<Database>(url, key);
 }
+
+export function isLocalEnv(): boolean {
+  const environment = Deno.env.get("ENVIRONMENT");
+  if (environment && environment.trim().toUpperCase() === "LOCAL") {
+    return true;
+  }
+  return false;
+}
