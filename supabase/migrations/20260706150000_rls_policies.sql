@@ -26,6 +26,8 @@ COMMENT ON POLICY "users_insert_own" ON public.users IS 'Users can create their 
 COMMENT ON POLICY "users_update_own" ON public.users IS 'Users can update their own profile';
 COMMENT ON POLICY "service_role_full_access_users" ON public.users IS 'Service role has full access';
 
+GRANT SELECT, INSERT, UPDATE ON public.users TO authenticated;
+
 ALTER TABLE public.collections ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "collections_select_own" ON public.collections;
@@ -60,27 +62,53 @@ COMMENT ON POLICY "collections_update_own" ON public.collections IS 'Users can u
 COMMENT ON POLICY "collections_delete_own" ON public.collections IS 'Users can delete their own collections';
 COMMENT ON POLICY "service_role_full_access_collections" ON public.collections IS 'Service role has full access';
 
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.collections TO authenticated;
+
 ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "documents_select_own" ON public.documents;
 CREATE POLICY "documents_select_own" ON public.documents
     FOR SELECT TO authenticated
-    USING (created_by = (select auth.uid())::text);
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.collections
+            WHERE collections.id = documents.collection_id
+              AND collections.user_id = (select auth.uid())
+        )
+    );
 
 DROP POLICY IF EXISTS "documents_insert_own" ON public.documents;
 CREATE POLICY "documents_insert_own" ON public.documents
     FOR INSERT TO authenticated
-    WITH CHECK (created_by = (select auth.uid())::text);
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM public.collections
+            WHERE collections.id = documents.collection_id
+              AND collections.user_id = (select auth.uid())
+        )
+    );
 
 DROP POLICY IF EXISTS "documents_update_own" ON public.documents;
 CREATE POLICY "documents_update_own" ON public.documents
     FOR UPDATE TO authenticated
-    USING (created_by = (select auth.uid())::text);
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.collections
+            WHERE collections.id = documents.collection_id
+              AND collections.user_id = (select auth.uid())
+        )
+    );
 
 DROP POLICY IF EXISTS "documents_delete_own" ON public.documents;
 CREATE POLICY "documents_delete_own" ON public.documents
     FOR DELETE TO authenticated
-    USING (created_by = (select auth.uid())::text);
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.collections
+            WHERE collections.id = documents.collection_id
+              AND collections.user_id = (select auth.uid())
+        )
+    );
 
 DROP POLICY IF EXISTS "service_role_full_access_documents" ON public.documents;
 CREATE POLICY "service_role_full_access_documents" ON public.documents
@@ -94,6 +122,8 @@ COMMENT ON POLICY "documents_update_own" ON public.documents IS 'Users can updat
 COMMENT ON POLICY "documents_delete_own" ON public.documents IS 'Users can delete their own documents';
 COMMENT ON POLICY "service_role_full_access_documents" ON public.documents IS 'Service role has full access';
 
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.documents TO authenticated;
+
 ALTER TABLE public.chunks ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "chunks_select_own" ON public.chunks;
@@ -102,8 +132,9 @@ CREATE POLICY "chunks_select_own" ON public.chunks
     USING (
         EXISTS (
             SELECT 1 FROM public.documents
+            JOIN public.collections ON collections.id = documents.collection_id
             WHERE documents.id = chunks.document_id
-              AND documents.created_by = (select auth.uid())::text
+              AND collections.user_id = (select auth.uid())
         )
     );
 
@@ -115,3 +146,55 @@ CREATE POLICY "service_role_full_access_chunks" ON public.chunks
 
 COMMENT ON POLICY "chunks_select_own" ON public.chunks IS 'Users can read chunks of their own documents';
 COMMENT ON POLICY "service_role_full_access_chunks" ON public.chunks IS 'Service role has full access to chunks';
+
+GRANT SELECT ON public.chunks TO authenticated;
+
+ALTER TABLE public.document_status ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "document_status_select_all" ON public.document_status;
+CREATE POLICY "document_status_select_all" ON public.document_status
+    FOR SELECT TO authenticated
+    USING (true);
+
+DROP POLICY IF EXISTS "service_role_full_access_document_status" ON public.document_status;
+CREATE POLICY "service_role_full_access_document_status" ON public.document_status
+    FOR ALL TO service_role
+    USING (true)
+    WITH CHECK (true);
+
+COMMENT ON POLICY "document_status_select_all" ON public.document_status IS 'All authenticated users can read document statuses';
+COMMENT ON POLICY "service_role_full_access_document_status" ON public.document_status IS 'Service role has full access';
+
+ALTER TABLE public.chunking_strategy ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "chunking_strategy_select_all" ON public.chunking_strategy;
+CREATE POLICY "chunking_strategy_select_all" ON public.chunking_strategy
+    FOR SELECT TO authenticated
+    USING (true);
+
+DROP POLICY IF EXISTS "service_role_full_access_chunking_strategy" ON public.chunking_strategy;
+CREATE POLICY "service_role_full_access_chunking_strategy" ON public.chunking_strategy
+    FOR ALL TO service_role
+    USING (true)
+    WITH CHECK (true);
+
+COMMENT ON POLICY "chunking_strategy_select_all" ON public.chunking_strategy IS 'All authenticated users can read chunking strategies';
+COMMENT ON POLICY "service_role_full_access_chunking_strategy" ON public.chunking_strategy IS 'Service role has full access';
+
+ALTER TABLE public.document_status_transition ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "document_status_transition_select_all" ON public.document_status_transition;
+CREATE POLICY "document_status_transition_select_all" ON public.document_status_transition
+    FOR SELECT TO authenticated
+    USING (true);
+
+DROP POLICY IF EXISTS "service_role_full_access_document_status_transition" ON public.document_status_transition;
+CREATE POLICY "service_role_full_access_document_status_transition" ON public.document_status_transition
+    FOR ALL TO service_role
+    USING (true)
+    WITH CHECK (true);
+
+COMMENT ON POLICY "document_status_transition_select_all" ON public.document_status_transition IS 'All authenticated users can read status transitions';
+COMMENT ON POLICY "service_role_full_access_document_status_transition" ON public.document_status_transition IS 'Service role has full access';
+
+GRANT SELECT ON public.document_status_transition TO authenticated;

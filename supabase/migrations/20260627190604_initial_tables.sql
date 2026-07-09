@@ -58,6 +58,8 @@ CREATE TABLE IF NOT EXISTS public.document_status(
 
 COMMENT ON TABLE public.document_status IS 'Status of documents.';
 
+GRANT SELECT ON public.document_status TO authenticated;
+
 COMMENT ON COLUMN public.document_status.display_name IS 'User facing string';
 
 COMMENT ON COLUMN public.document_status.description IS 'User facing string';
@@ -78,6 +80,8 @@ COMMENT ON COLUMN public.chunking_strategy.display_name IS 'User facing string';
 COMMENT ON COLUMN public.chunking_strategy.description IS 'User facing string';
 
 COMMENT ON COLUMN public.chunking_strategy.is_enabled IS 'Tells if the strategy is enabled to be used';
+
+GRANT SELECT ON public.chunking_strategy TO authenticated;
 
 CREATE TABLE IF NOT EXISTS public.documents(
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
