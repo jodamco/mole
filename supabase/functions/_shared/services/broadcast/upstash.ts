@@ -5,14 +5,21 @@ import type {
   PubSubService,
   ReceivedMessage,
 } from "./types.ts";
+import { isLocalEnv } from "../../utils/supabase_utils.ts";
 
-const projectId = Deno.env.get("SUPABASE_PROJECT_ID") ?? "<project_id>";
+const projectId = Deno.env.get("SB_PROJECT_ID") ?? "<project_id>";
+const supabaseUrl = Deno.env.get("SB_URL") ?? "";
+
+function buildTopicUrl(path: string): string {
+  if (isLocalEnv()) {
+    return `${supabaseUrl.replace(/\/$/, "")}/functions/v1/${path}`;
+  }
+  return `https://${projectId}.supabase.co/functions/v1/${path}`;
+}
 
 const TOPIC_URL_MAP: Record<Topic, string> = {
-  [Topic.DOCUMENT_UPLOADED]:
-    `https://${projectId}.supabase.co/functions/v1/chunk`,
-  [Topic.DOCUMENT_CHUNKED]:
-    `https://${projectId}.supabase.co/functions/v1/embed-chunks`,
+  [Topic.DOCUMENT_UPLOADED]: buildTopicUrl("chunk"),
+  [Topic.DOCUMENT_CHUNKED]: buildTopicUrl("embed-chunks"),
 };
 
 export class UpstashService implements PubSubService {

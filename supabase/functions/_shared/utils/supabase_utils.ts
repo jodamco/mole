@@ -5,8 +5,8 @@ import type { Database } from "../types/database.types.ts";
 // Required when operating without an authenticated user context
 // (e.g. functions triggered from external sources like Upstash).
 export function createServiceClient(): SupabaseClient<Database> {
-  const url = Deno.env.get("SUPABASE_URL");
-  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const url = Deno.env.get("SB_URL");
+  const key = Deno.env.get("SB_SERVICE_ROLE_KEY");
   if (!url || !key) {
     throw new Error("Missing Supabase service role configuration.");
   }
