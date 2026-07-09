@@ -1,13 +1,13 @@
 import { assertEquals } from "@std/assert";
 import { SupabaseContext } from "@supabase/server";
-import { Database } from "../../../_shared/types/database.types.ts";
+import { Database } from "_shared/types/database.types.ts";
 import { handler } from "../../../document/index.ts";
-import { BroadcastService } from "../../../_shared/services/broadcast/service.ts";
+import { BroadcastService } from "_shared/services/broadcast/service.ts";
 import type {
   PublishMessage,
   PubSubService,
   ReceivedMessage,
-} from "../../../_shared/services/broadcast/types.ts";
+} from "_shared/services/broadcast/types.ts";
 import {
   createMockSupabase,
   createRequest,

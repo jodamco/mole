@@ -5,8 +5,8 @@ import {
   badRequest,
   internalError,
   methodNotAllowed,
-} from "../_shared/types/response_types.ts";
-import { BroadcastService } from "../_shared/services/broadcast/service.ts";
+} from "_shared/types/response_types.ts";
+import { BroadcastService } from "_shared/services/broadcast/service.ts";
 import { processChunking } from "./daf.ts";
 
 const handler = async (req: Request): Promise<ApiResponse> => {

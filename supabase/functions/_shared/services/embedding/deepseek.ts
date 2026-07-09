@@ -3,8 +3,8 @@ import type {
   EmbeddingProvider,
   EmbeddingRequest,
 } from "./types.ts";
-import { ServerError } from "../../types/error_types.ts";
-import { requestWithRetry } from "../../utils/request_utils.ts";
+import { ServerError } from "_shared/types/error_types.ts";
+import { requestWithRetry } from "_shared/utils/request_utils.ts";
 
 const DEEPSEEK_API_URL = "https://api.deepseek.com/v1/embeddings";
 

@@ -1,9 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { createServiceClient } from "../_shared/utils/supabase_utils.ts";
-import { DocumentStatus } from "../_shared/types/document_status.ts";
-import type { Database, Json } from "../_shared/types/database.types.ts";
-import { EmbeddingService } from "../_shared/services/embedding/service.ts";
-import { UsageTrackingService } from "../_shared/services/usage/service.ts";
+import { createServiceClient } from "_shared/utils/supabase_utils.ts";
+import { DocumentStatus } from "_shared/types/document_status.ts";
+import type { Database, Json } from "_shared/types/database.types.ts";
+import { EmbeddingService } from "_shared/services/embedding/service.ts";
+import { UsageTrackingService } from "_shared/services/usage/service.ts";
 import type { ChunkBatch, EmbeddingResult } from "./types.ts";
 
 const CHUNKS_PER_LOOP = 100;

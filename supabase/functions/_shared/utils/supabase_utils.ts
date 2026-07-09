@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "../types/database.types.ts";
+import type { Database } from "_shared/types/database.types.ts";
 
 // Unsafe: service role client bypasses RLS.
 // Required when operating without an authenticated user context

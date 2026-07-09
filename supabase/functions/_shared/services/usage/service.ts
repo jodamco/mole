@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "../../types/database.types.ts";
-import { createServiceClient } from "../../utils/supabase_utils.ts";
+import type { Database } from "_shared/types/database.types.ts";
+import { createServiceClient } from "_shared/utils/supabase_utils.ts";
 import type { UsageLogEntry } from "./types.ts";
 
 export type { UsageLogEntry };

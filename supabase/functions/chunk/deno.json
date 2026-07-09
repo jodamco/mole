@@ -1,5 +1,6 @@
 {
   "imports": {
+    "_shared/": "../_shared/",
     "@supabase/functions-js": "jsr:@supabase/functions-js@^2",
     "@supabase/supabase-js": "npm:@supabase/supabase-js@^2",
     "mammoth": "npm:mammoth@1",

@@ -5,7 +5,7 @@ import type {
   PubSubService,
   ReceivedMessage,
 } from "./types.ts";
-import { isLocalEnv } from "../../utils/supabase_utils.ts";
+import { isLocalEnv } from "_shared/utils/supabase_utils.ts";
 
 const projectId = Deno.env.get("SB_PROJECT_ID") ?? "<project_id>";
 const supabaseUrl = Deno.env.get("SB_URL") ?? "";

@@ -5,10 +5,10 @@ import {
   internalError,
   notFound,
   success,
-} from "../_shared/types/response_types.ts";
-import { Database } from "../_shared/types/database.types.ts";
-import { isEmpty } from "../_shared/utils/validator_utils.ts";
-import { BroadcastService, Topic } from "../_shared/services/broadcast/service.ts";
+} from "_shared/types/response_types.ts";
+import { Database } from "_shared/types/database.types.ts";
+import { isEmpty } from "_shared/utils/validator_utils.ts";
+import { BroadcastService, Topic } from "_shared/services/broadcast/service.ts";
 
 const DOCUMENT_BUCKET = "documents";
 const MAX_FILE_SIZE = 50 * 1024 * 1024;

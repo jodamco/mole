@@ -9,7 +9,7 @@ import {
     allowPreflight,
     ApiResponse,
     internalError,
-} from "../types/response_types.ts";
+} from "_shared/types/response_types.ts";
 
 /// Allow preflight requests by default on wrapped handlers
 /// and wrap the code with a try catch for execution

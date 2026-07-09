@@ -1,5 +1,6 @@
 {
   "imports": {
+    "_shared/": "./supabase/functions/_shared/",
     "@supabase/supabase-js": "jsr:@supabase/supabase-js@^2.110.0",
     "@upstash/qstash@^2": "npm:@upstash/qstash@^2"
   }

@@ -1,4 +1,4 @@
-import { Embedding } from "../_shared/services/embedding/service.ts";
+import { Embedding } from "_shared/services/embedding/service.ts";
 
 export type Chunk = { id: number; txt: string };
 
