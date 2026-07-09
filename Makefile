@@ -1,10 +1,11 @@
 .PHONY: reset unit-test qstash
 
 reset:
+	docker kill qstash
 	supabase stop --no-backup
 	supabase start
 	docker run -d --name qstash -p 8080:8080 public.ecr.aws/upstash/qstash:latest qstash dev
-	supabase functions serve
+	supabase functions serve --env-file supabase/.env.local
 
 unit-test:
 	cd supabase/functions/tests/unit && deno test --allow-env --allow-net --allow-read
