@@ -22,7 +22,7 @@ const TOPIC_URL_MAP: Record<Topic, string> = {
   [Topic.DOCUMENT_CHUNKED]: buildTopicUrl("embed-chunks"),
 };
 
-export class UpstashService implements PubSubService {
+export class QstashService implements PubSubService {
   private client: Client;
   private receiver: Receiver;
   readonly signatureHeader = "Upstash-Signature";
@@ -80,7 +80,7 @@ export class UpstashService implements PubSubService {
     });
 
     if (!isValid) {
-      throw new Error("Invalid Upstash signature");
+      throw new Error("Invalid Qstash signature");
     }
 
     const parsed = JSON.parse(body);

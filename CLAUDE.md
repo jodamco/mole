@@ -110,7 +110,7 @@ Handlers should be as thin as possible — only route requests to different meth
    });
    ```
 
-3. **`PubSubService` interface** defines the contract. Any provider must implement `publish(message: PublishMessage): Promise<void>`. The default implementation is `UpstashService`.
+3. **`PubSubService` interface** defines the contract. Any provider must implement `publish(message: PublishMessage): Promise<void>`. The default implementation is `QstashService`.
 
 4. **To swap providers:**
    ```ts

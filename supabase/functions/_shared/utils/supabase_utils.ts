@@ -3,7 +3,7 @@ import type { Database } from "../types/database.types.ts";
 
 // Unsafe: service role client bypasses RLS.
 // Required when operating without an authenticated user context
-// (e.g. functions triggered from external sources like Upstash).
+// (e.g. functions triggered from external sources like Qstash).
 export function createServiceClient(): SupabaseClient<Database> {
   const url = Deno.env.get("SB_URL");
   const key = Deno.env.get("SB_SERVICE_ROLE_KEY");

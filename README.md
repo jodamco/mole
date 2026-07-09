@@ -61,7 +61,7 @@ supabase/
 └── functions/
     ├── _shared/
     │   ├── services/
-    │   │   ├── broadcast/       # Pub/sub message broker (Upstash)
+    │   │   ├── broadcast/       # Pub/sub message broker (Qstash)
     │   │   ├── embedding/       # Embedding service (swappable AI providers)
     │   │   └── usage/           # Token usage tracking (fire-and-forget)
     │   ├── types/
@@ -135,8 +135,8 @@ supabase/
 
 | Function | Trigger | What |
 |----------|---------|------|
-| `chunk` | Broadcast (Upstash) | Extracts text from uploaded file, splits into chunks, saves to DB |
-| `embed-chunks` | Broadcast (Upstash) | Creates embeddings for unprocessed chunks using background workers |
+| `chunk` | Broadcast (Qstash) | Extracts text from uploaded file, splits into chunks, saves to DB |
+| `embed-chunks` | Broadcast (Qstash) | Creates embeddings for unprocessed chunks using background workers |
 
 ## Processing pipeline
 

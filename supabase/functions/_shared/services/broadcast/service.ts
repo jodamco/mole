@@ -1,4 +1,4 @@
-import { UpstashService } from "./upstash.ts";
+import { QstashService } from "./qstash.ts";
 import { Topic } from "./types.ts";
 import type { PublishMessage, PubSubService, ReceivedMessage } from "./types.ts";
 
@@ -9,7 +9,7 @@ export class BroadcastService {
   private service: PubSubService;
 
   constructor(service?: PubSubService) {
-    this.service = service ?? new UpstashService();
+    this.service = service ?? new QstashService();
   }
 
   get signatureHeader(): string {
