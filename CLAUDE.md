@@ -20,6 +20,8 @@
 
 6. **Never invent product behavior.** Technical decisions are made and documented; product, cost, access, or feature-flag questions are surfaced to the user — never guessed past.
 
+7. **Never read `.env*` files.** Treat all `.env`, `.env.local`, `.env.*` files as opaque secrets. Do not read, display, or reference their contents.
+
 ## Coding Style
 
 1. **Prefer functional/vector chains** (`map`/`filter`/`reduce`) over imperative `for` loops. Reach for a loop only when genuinely clearer or required (e.g., sequential `await`s where each step depends on the previous).

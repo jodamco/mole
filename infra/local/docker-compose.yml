@@ -1,0 +1,15 @@
+services:
+  qstash:
+    image: public.ecr.aws/upstash/qstash:latest
+    container_name: qstash
+    command: qstash dev
+    ports:
+      - "8080:8080"
+    networks:
+      - supabase_network_mole
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  supabase_network_mole:
+    external: true

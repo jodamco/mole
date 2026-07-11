@@ -27,6 +27,7 @@ COMMENT ON POLICY "users_update_own" ON public.users IS 'Users can update their 
 COMMENT ON POLICY "service_role_full_access_users" ON public.users IS 'Service role has full access';
 
 GRANT SELECT, INSERT, UPDATE ON public.users TO authenticated;
+GRANT ALL ON public.users TO service_role;
 
 ALTER TABLE public.collections ENABLE ROW LEVEL SECURITY;
 
@@ -63,6 +64,7 @@ COMMENT ON POLICY "collections_delete_own" ON public.collections IS 'Users can d
 COMMENT ON POLICY "service_role_full_access_collections" ON public.collections IS 'Service role has full access';
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.collections TO authenticated;
+GRANT ALL ON public.collections TO service_role;
 
 ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 
@@ -123,6 +125,7 @@ COMMENT ON POLICY "documents_delete_own" ON public.documents IS 'Users can delet
 COMMENT ON POLICY "service_role_full_access_documents" ON public.documents IS 'Service role has full access';
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.documents TO authenticated;
+GRANT ALL ON public.documents TO service_role;
 
 ALTER TABLE public.chunks ENABLE ROW LEVEL SECURITY;
 
@@ -148,6 +151,7 @@ COMMENT ON POLICY "chunks_select_own" ON public.chunks IS 'Users can read chunks
 COMMENT ON POLICY "service_role_full_access_chunks" ON public.chunks IS 'Service role has full access to chunks';
 
 GRANT SELECT ON public.chunks TO authenticated;
+GRANT ALL ON public.chunks TO service_role;
 
 ALTER TABLE public.document_status ENABLE ROW LEVEL SECURITY;
 
@@ -198,3 +202,4 @@ COMMENT ON POLICY "document_status_transition_select_all" ON public.document_sta
 COMMENT ON POLICY "service_role_full_access_document_status_transition" ON public.document_status_transition IS 'Service role has full access';
 
 GRANT SELECT ON public.document_status_transition TO authenticated;
+GRANT ALL ON public.document_status_transition TO service_role;

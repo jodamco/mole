@@ -53,3 +53,4 @@ CREATE POLICY "service_role_insert_usage" ON usage.ai_usage_log
     WITH CHECK (true);
 
 GRANT SELECT ON usage.ai_usage_log TO authenticated;
+GRANT ALL ON usage.ai_usage_log TO service_role;

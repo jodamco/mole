@@ -5,12 +5,18 @@ import type { Database } from "_shared/types/database.types.ts";
 // Required when operating without an authenticated user context
 // (e.g. functions triggered from external sources like Qstash).
 export function createServiceClient(): SupabaseClient<Database> {
-  const url = Deno.env.get("SB_URL");
+  const url = isLocalEnv() ? "http://kong:8000" : Deno.env.get("SB_URL");
   const key = Deno.env.get("SB_SERVICE_ROLE_KEY");
   if (!url || !key) {
     throw new Error("Missing Supabase service role configuration.");
   }
-  return createClient<Database>(url, key);
+
+  return createClient<Database>(url, key, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
 }
 
 export function isLocalEnv(): boolean {
