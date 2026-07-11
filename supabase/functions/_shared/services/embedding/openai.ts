@@ -43,9 +43,11 @@ export class OpenAIEmbeddingProvider implements EmbeddingProvider {
 
     const data = await response.json();
     const usedModel = request.model ?? this.model;
+    const usage = data.usage;
     return data.data.map((item: { embedding: number[] }) => ({
       values: item.embedding,
       model: usedModel,
+      usage,
     }));
   }
 }

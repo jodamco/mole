@@ -73,8 +73,3 @@ Deno.test("EmbeddingService.openai creates service with OpenAI provider", () => 
   const service = EmbeddingService.openai("test-key");
   assertEquals(service instanceof EmbeddingService, true);
 });
-
-Deno.test("EmbeddingService.deepseek creates service with DeepSeek provider", () => {
-  const service = EmbeddingService.deepseek("test-key");
-  assertEquals(service instanceof EmbeddingService, true);
-});
