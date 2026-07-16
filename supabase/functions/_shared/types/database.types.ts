@@ -7,35 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       chunking_strategy: {
         Row: {
+          best_for: string | null
           created_at: string
           description: string | null
           display_name: string
@@ -44,6 +20,7 @@ export type Database = {
           name: string
         }
         Insert: {
+          best_for?: string | null
           created_at?: string
           description?: string | null
           display_name: string
@@ -52,6 +29,7 @@ export type Database = {
           name: string
         }
         Update: {
+          best_for?: string | null
           created_at?: string
           description?: string | null
           display_name?: string
@@ -177,6 +155,42 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      document_status_transition: {
+        Row: {
+          created_at: string
+          from_status_id: number
+          id: number
+          to_status_id: number
+        }
+        Insert: {
+          created_at?: string
+          from_status_id: number
+          id?: never
+          to_status_id: number
+        }
+        Update: {
+          created_at?: string
+          from_status_id?: number
+          id?: never
+          to_status_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_status_transition_from_status_id_fkey"
+            columns: ["from_status_id"]
+            isOneToOne: false
+            referencedRelation: "document_status"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_status_transition_to_status_id_fkey"
+            columns: ["to_status_id"]
+            isOneToOne: false
+            referencedRelation: "document_status"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       documents: {
         Row: {
@@ -403,9 +417,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },
