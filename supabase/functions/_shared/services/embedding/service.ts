@@ -1,4 +1,3 @@
-import { DeepSeekEmbeddingProvider } from "./deepseek.ts";
 import { OpenAIEmbeddingProvider } from "./openai.ts";
 import type {
   Embedding,
@@ -7,7 +6,7 @@ import type {
 } from "./types.ts";
 
 export type { Embedding, EmbeddingProvider, EmbeddingRequest };
-export { DeepSeekEmbeddingProvider, OpenAIEmbeddingProvider };
+export { OpenAIEmbeddingProvider };
 
 export class EmbeddingService {
   private provider: EmbeddingProvider;
@@ -18,10 +17,6 @@ export class EmbeddingService {
 
   static openai(apiKey?: string, model?: string): EmbeddingService {
     return new EmbeddingService(new OpenAIEmbeddingProvider(apiKey, model));
-  }
-
-  static deepseek(apiKey?: string, model?: string): EmbeddingService {
-    return new EmbeddingService(new DeepSeekEmbeddingProvider(apiKey, model));
   }
 
   async createEmbedding(text: string): Promise<Embedding> {

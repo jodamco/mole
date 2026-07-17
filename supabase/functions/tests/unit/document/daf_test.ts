@@ -1,6 +1,6 @@
 import { assertEquals } from "@std/assert";
 import { SupabaseContext } from "@supabase/server";
-import { Database } from "../../../_shared/types/database.types.ts";
+import { Database } from "_shared/types/database.types.ts";
 import {
   createMockSupabase,
   createRequest,
@@ -14,12 +14,12 @@ import {
   getDocument,
   getDocuments,
 } from "../../../document/daf.ts";
-import { BroadcastService } from "../../../_shared/services/broadcast/service.ts";
+import { BroadcastService } from "_shared/services/broadcast/service.ts";
 import type {
   PublishMessage,
   PubSubService,
   ReceivedMessage,
-} from "../../../_shared/services/broadcast/types.ts";
+} from "_shared/services/broadcast/types.ts";
 
 function createMockBroadcastService(): BroadcastService {
   const mockPubSub: PubSubService = {

@@ -1,6 +1,6 @@
 import { assertEquals } from "@std/assert";
 import { SupabaseContext } from "@supabase/server";
-import { Database } from "../../../_shared/types/database.types.ts";
+import { Database } from "_shared/types/database.types.ts";
 import { handler } from "../../../collection/index.ts";
 import {
   createMockSupabase,

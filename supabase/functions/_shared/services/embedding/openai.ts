@@ -3,8 +3,8 @@ import type {
   EmbeddingProvider,
   EmbeddingRequest,
 } from "./types.ts";
-import { ServerError } from "../../types/error_types.ts";
-import { requestWithRetry } from "../../utils/request_utils.ts";
+import { ServerError } from "_shared/types/error_types.ts";
+import { requestWithRetry } from "_shared/utils/request_utils.ts";
 
 const OPENAI_API_URL = "https://api.openai.com/v1/embeddings";
 
@@ -43,9 +43,11 @@ export class OpenAIEmbeddingProvider implements EmbeddingProvider {
 
     const data = await response.json();
     const usedModel = request.model ?? this.model;
+    const usage = data.usage;
     return data.data.map((item: { embedding: number[] }) => ({
       values: item.embedding,
       model: usedModel,
+      usage,
     }));
   }
 }

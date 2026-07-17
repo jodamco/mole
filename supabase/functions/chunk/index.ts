@@ -5,8 +5,9 @@ import {
   badRequest,
   internalError,
   methodNotAllowed,
-} from "../_shared/types/response_types.ts";
-import { BroadcastService } from "../_shared/services/broadcast/service.ts";
+  success,
+} from "_shared/types/response_types.ts";
+import { BroadcastService } from "_shared/services/broadcast/service.ts";
 import { processChunking } from "./daf.ts";
 
 const handler = async (req: Request): Promise<ApiResponse> => {
@@ -27,7 +28,20 @@ const handler = async (req: Request): Promise<ApiResponse> => {
       return badRequest("Missing or invalid documentId.");
     }
 
-    return await processChunking(documentId);
+    const bg = processChunking(documentId);
+
+    const edgeRuntime = (globalThis as Record<string, unknown>)
+      .EdgeRuntime as
+        | { waitUntil: (p: Promise<unknown>) => void }
+        | undefined;
+
+    if (edgeRuntime?.waitUntil) {
+      edgeRuntime.waitUntil(bg);
+      return success({ message: "Chunking started." });
+    }
+
+    await bg;
+    return success({ message: "Chunking completed." });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : undefined;
     return internalError(message);

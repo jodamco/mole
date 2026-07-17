@@ -2,16 +2,19 @@ import "@supabase/functions-js/edge-runtime.d.ts";
 
 import { SupabaseContext } from "@supabase/server";
 
-import { customFetchWrapper, getUserId } from "../_shared/utils/fetch_wrapper_utils.ts";
-import { getIdFromPath } from "../_shared/utils/route_utils.ts";
-import { Database } from "../_shared/types/database.types.ts";
+import {
+  customFetchWrapper,
+  getUserId,
+} from "_shared/utils/fetch_wrapper_utils.ts";
+import { getIdFromPath } from "_shared/utils/route_utils.ts";
+import { Database } from "_shared/types/database.types.ts";
 
 import {
   ApiResponse,
   internalError,
   methodNotAllowed,
-} from "../_shared/types/response_types.ts";
-import { BroadcastService } from "../_shared/services/broadcast/service.ts";
+} from "_shared/types/response_types.ts";
+import { BroadcastService } from "_shared/services/broadcast/service.ts";
 import {
   completeUpload,
   createDocument,

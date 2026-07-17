@@ -1,5 +1,11 @@
 CREATE SCHEMA IF NOT EXISTS usage;
 
+GRANT USAGE ON SCHEMA usage TO service_role;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA usage TO service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA usage GRANT ALL PRIVILEGES ON TABLES TO service_role;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA usage TO service_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA usage GRANT USAGE, SELECT ON SEQUENCES TO service_role;
+
 COMMENT ON SCHEMA usage IS 'AI usage and token tracking';
 
 CREATE TABLE IF NOT EXISTS usage.ai_usage_log (
@@ -51,3 +57,6 @@ CREATE POLICY "auth_users_select_own_usage" ON usage.ai_usage_log
 CREATE POLICY "service_role_insert_usage" ON usage.ai_usage_log
     FOR INSERT TO service_role
     WITH CHECK (true);
+
+GRANT SELECT ON usage.ai_usage_log TO authenticated;
+GRANT ALL ON usage.ai_usage_log TO service_role;

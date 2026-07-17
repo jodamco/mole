@@ -18,6 +18,20 @@
    - If you think a history-affecting git operation is needed, refer back to the user.
    - **Prioritize repository safety over task execution.**
 
+6. **Never invent product behavior.** Technical decisions are made and documented; product, cost, access, or feature-flag questions are surfaced to the user — never guessed past.
+
+7. **Never read `.env*` files.** Treat all `.env`, `.env.local`, `.env.*` files as opaque secrets. Do not read, display, or reference their contents.
+
+## Coding Style
+
+1. **Prefer functional/vector chains** (`map`/`filter`/`reduce`) over imperative `for` loops. Reach for a loop only when genuinely clearer or required (e.g., sequential `await`s where each step depends on the previous).
+
+2. **Comments describe the present, never the rollout.** No future plans, "temporary until X", or decision history. Code behind a feature flag is described by its current behavior, not the rollout strategy.
+
+3. **Checkpoint logs.** During implementation, add `console.log` at key execution points and READ THEM BACK to confirm the code reaches each point with the correct data. Strip all debug/checkpoint logs before committing — the final commit must have no leftover scaffolding.
+
+4. **Doc hygiene.** Trim doc comments to only what the code doesn't already convey — strip ones that restate a signature or clear name. When updating existing docs, keep them tight and current: document only the genuinely relevant new pieces, without the chain of decisions.
+
 ## DB — Migrations
 
 1. **Always write idempotent SQL.** Use:
@@ -110,7 +124,7 @@ Handlers should be as thin as possible — only route requests to different meth
    });
    ```
 
-3. **`PubSubService` interface** defines the contract. Any provider must implement `publish(message: PublishMessage): Promise<void>`. The default implementation is `UpstashService`.
+3. **`PubSubService` interface** defines the contract. Any provider must implement `publish(message: PublishMessage): Promise<void>`. The default implementation is `QstashService`.
 
 4. **To swap providers:**
    ```ts

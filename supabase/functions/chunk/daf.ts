@@ -1,13 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { createServiceClient } from "../_shared/utils/supabase_utils.ts";
-import { DocumentStatus } from "../_shared/types/document_status.ts";
-import type { Database, Json } from "../_shared/types/database.types.ts";
-import type { ApiResponse } from "../_shared/types/response_types.ts";
-import { internalError, success } from "../_shared/types/response_types.ts";
+import { createServiceClient } from "_shared/utils/supabase_utils.ts";
+import { DocumentStatus } from "_shared/types/document_status.ts";
+import type { Database, Json } from "_shared/types/database.types.ts";
+import type { ApiResponse } from "_shared/types/response_types.ts";
+import { internalError, success } from "_shared/types/response_types.ts";
 import { extractText } from "./text_extractor.ts";
 import { chunkText } from "./strategies.ts";
-import { BroadcastService, Topic } from "../_shared/services/broadcast/service.ts";
+import { BroadcastService, Topic } from "_shared/services/broadcast/service.ts";
 
 const DOCUMENT_BUCKET = "documents";
 

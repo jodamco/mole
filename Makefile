@@ -1,10 +1,11 @@
-.PHONY: reset unit-test qstash
+.PHONY: reset unit-test qstash-up qstash-down
 
 reset:
+	$(MAKE) qstash-down
 	supabase stop --no-backup
 	supabase start
-	docker run -d --name qstash -p 8080:8080 public.ecr.aws/upstash/qstash:latest qstash dev
-	supabase functions serve
+	$(MAKE) qstash-up
+	supabase functions serve --env-file supabase/.env.local
 
 unit-test:
 	cd supabase/functions/tests/unit && deno test --allow-env --allow-net --allow-read
@@ -12,5 +13,8 @@ unit-test:
 integration-test:
 	cd supabase/functions/tests/integration && deno test --allow-env --allow-net --allow-read
 
-qstash:
-	docker run -p 8080:8080 public.ecr.aws/upstash/qstash:latest qstash dev
+qstash-up:
+	cd infra/local/ && docker compose up -d && cd ../../
+
+qstash-down:
+	cd infra/local/ && docker compose down && cd ../../

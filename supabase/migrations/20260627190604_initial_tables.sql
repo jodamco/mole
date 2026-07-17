@@ -58,6 +58,9 @@ CREATE TABLE IF NOT EXISTS public.document_status(
 
 COMMENT ON TABLE public.document_status IS 'Status of documents.';
 
+GRANT SELECT ON public.document_status TO authenticated;
+GRANT ALL ON public.document_status TO service_role;
+
 COMMENT ON COLUMN public.document_status.display_name IS 'User facing string';
 
 COMMENT ON COLUMN public.document_status.description IS 'User facing string';
@@ -78,6 +81,9 @@ COMMENT ON COLUMN public.chunking_strategy.display_name IS 'User facing string';
 COMMENT ON COLUMN public.chunking_strategy.description IS 'User facing string';
 
 COMMENT ON COLUMN public.chunking_strategy.is_enabled IS 'Tells if the strategy is enabled to be used';
+
+GRANT SELECT ON public.chunking_strategy TO authenticated;
+GRANT ALL ON public.chunking_strategy TO service_role;
 
 CREATE TABLE IF NOT EXISTS public.documents(
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -108,7 +114,10 @@ CREATE TABLE IF NOT EXISTS public.chunks(
     prev_chunk_id integer REFERENCES public.chunks(id) ON DELETE SET NULL,
     next_chunk_id integer REFERENCES public.chunks(id) ON DELETE SET NULL,
     embedding_model varchar(30),
-    CONSTRAINT if_embedding_model CHECK (NOT ((embedding IS NULL) AND (embedding_model IS NULL)))
+    CONSTRAINT if_embedding_model CHECK (
+      (embedding IS NULL AND embedding_model IS NULL) OR
+      (embedding IS NOT NULL AND embedding_model IS NOT NULL)
+    )
 );
 
 COMMENT ON TABLE public.chunks IS 'Chunks of text extracted from documents';

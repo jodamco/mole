@@ -4,10 +4,11 @@ export class DocumentStatus {
   private constructor(private ids: Map<string, number>) {}
 
   static async load(supabase: SupabaseClient): Promise<DocumentStatus> {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("document_status")
-      .select("name, id");
+      .select("*");
 
+    if (error) throw Error(error.message);
     if (!data) throw new Error("Failed to load document statuses.");
 
     const ids = new Map<string, number>(

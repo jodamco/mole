@@ -5,17 +5,24 @@ import type {
   PubSubService,
   ReceivedMessage,
 } from "./types.ts";
+import { isLocalEnv } from "_shared/utils/supabase_utils.ts";
 
-const projectId = Deno.env.get("SUPABASE_PROJECT_ID") ?? "<project_id>";
+const projectId = Deno.env.get("SB_PROJECT_ID") ?? "<project_id>";
+const qstashUrl = Deno.env.get("QSTASH_URL") ?? undefined;
+
+function buildTopicUrl(path: string): string {
+  if (isLocalEnv()) {
+    return `http://host.docker.internal:54331/functions/v1/${path}`;
+  }
+  return `https://${projectId}.supabase.co/functions/v1/${path}`;
+}
 
 const TOPIC_URL_MAP: Record<Topic, string> = {
-  [Topic.DOCUMENT_UPLOADED]:
-    `https://${projectId}.supabase.co/functions/v1/chunk`,
-  [Topic.DOCUMENT_CHUNKED]:
-    `https://${projectId}.supabase.co/functions/v1/embed-chunks`,
+  [Topic.DOCUMENT_UPLOADED]: buildTopicUrl("chunk"),
+  [Topic.DOCUMENT_CHUNKED]: buildTopicUrl("embed-chunks"),
 };
 
-export class UpstashService implements PubSubService {
+export class QstashService implements PubSubService {
   private client: Client;
   private receiver: Receiver;
   readonly signatureHeader = "Upstash-Signature";
@@ -25,7 +32,7 @@ export class UpstashService implements PubSubService {
     if (!token) {
       throw new Error("QSTASH_TOKEN environment variable is required");
     }
-    this.client = new Client({ token });
+    this.client = new Client({ token, baseUrl: qstashUrl });
 
     const currentSigningKey = Deno.env.get("QSTASH_CURRENT_SIGNING_KEY");
     const nextSigningKey = Deno.env.get("QSTASH_NEXT_SIGNING_KEY");
@@ -73,7 +80,7 @@ export class UpstashService implements PubSubService {
     });
 
     if (!isValid) {
-      throw new Error("Invalid Upstash signature");
+      throw new Error("Invalid Qstash signature");
     }
 
     const parsed = JSON.parse(body);

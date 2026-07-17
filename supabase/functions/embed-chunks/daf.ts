@@ -1,9 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { createServiceClient } from "../_shared/utils/supabase_utils.ts";
-import { DocumentStatus } from "../_shared/types/document_status.ts";
-import type { Database, Json } from "../_shared/types/database.types.ts";
-import { EmbeddingService } from "../_shared/services/embedding/service.ts";
-import { UsageTrackingService } from "../_shared/services/usage/service.ts";
+import { createServiceClient } from "_shared/utils/supabase_utils.ts";
+import { DocumentStatus } from "_shared/types/document_status.ts";
+import type { Database, Json } from "_shared/types/database.types.ts";
+import { EmbeddingService } from "_shared/services/embedding/service.ts";
+import { UsageTrackingService } from "_shared/services/usage/service.ts";
 import type { ChunkBatch, EmbeddingResult } from "./types.ts";
 
 const CHUNKS_PER_LOOP = 100;
@@ -96,12 +96,16 @@ async function saveBatchEmbeddings(
     );
 
   if (updates.length > 0) {
-    const { error } = await supabase
-      .from("chunks")
-      // deno-lint-ignore no-explicit-any
-      .upsert(updates as any, { onConflict: "id" });
+    for (const u of updates) {
+      const { id: _id, ...fields } = u;
+      const { error } = await supabase
+        .from("chunks")
+        // deno-lint-ignore no-explicit-any
+        .update(fields as any)
+        .eq("id", _id);
 
-    if (error) throw new Error(error.message);
+      if (error) throw new Error(error.message);
+    }
   }
 }
 
@@ -110,7 +114,7 @@ export async function processEmbeddings(
 ): Promise<void> {
   const supabase = createServiceClient();
   const statuses = await DocumentStatus.load(supabase);
-  const embeddingService = EmbeddingService.deepseek();
+  const embeddingService = EmbeddingService.openai();
 
   try {
     const { createdBy } = await claimDocument(supabase, documentId, statuses);
@@ -159,7 +163,7 @@ export async function processEmbeddings(
       userId: createdBy,
       feature: "document_embedding",
       edgeFunction: "embed-chunks",
-      vendor: "deepseek",
+      vendor: "openai",
       model,
       inputTokens: totalPromptTokens,
       outputTokens: 0,

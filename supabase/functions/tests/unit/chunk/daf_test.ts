@@ -1,7 +1,7 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "../../../_shared/types/database.types.ts";
-import { DocumentStatus } from "../../../_shared/types/document_status.ts";
+import { Database } from "_shared/types/database.types.ts";
+import { DocumentStatus } from "_shared/types/document_status.ts";
 import {
   claimDocument,
   downloadFile,

@@ -1,3 +1,5 @@
+import { Json } from "../../types/usage.ts";
+
 export interface UsageLogEntry {
   userId?: string;
   userEmail?: string;
@@ -9,5 +11,5 @@ export interface UsageLogEntry {
   outputTokens: number;
   isSystemTriggered: boolean;
   cacheRead: boolean;
-  metadata?: Record<string, unknown>;
+  metadata?: Json | undefined;
 }

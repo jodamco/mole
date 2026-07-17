@@ -10,7 +10,7 @@ const DEFAULT_OPTIONS: Required<RetryOptions> = {
   maxDelayMs: 30000,
 };
 
-import { isRetryableError, ServerError } from "../types/error_types.ts";
+import { isRetryableError, ServerError } from "_shared/types/error_types.ts";
 
 export async function requestWithRetry(
   url: string | URL | Request,
